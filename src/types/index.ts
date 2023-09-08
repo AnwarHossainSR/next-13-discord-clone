@@ -1,6 +1,10 @@
-import type { NextPage } from 'next';
+import type { Server as NetServer, Socket } from 'net';
+
+import type { Member, Profile, Server } from '@prisma/client';
+import type { NextApiResponse, NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import type { ReactNode } from 'react';
+import type { Server as SocketIOServer } from 'socket.io';
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: () => ReactNode;
@@ -14,21 +18,14 @@ export type ChildrenProps = {
   children: ReactNode;
 };
 
-export type IToken = {
-  accessToken: string;
-  refreshToken?: string;
+export type ServerWithMembersWithProfiles = Server & {
+  members: (Member & { profile: Profile })[];
 };
 
-export interface CurrentUserProps {
-  currentUser?: {
-    createdAt: string;
-    updatedAt: string;
-    emailVerified: string | null;
-    id: string;
-    name: string | null;
-    email: string | null;
-    image: string | null;
-    password: string | null;
-    isAdmin: boolean;
-  } | null;
-}
+export type NextApiResponseServerIo = NextApiResponse & {
+  socket: Socket & {
+    server: NetServer & {
+      io: SocketIOServer;
+    };
+  };
+};
