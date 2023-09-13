@@ -1,19 +1,16 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { io as ClientIO } from 'socket.io-client';
 
 import type { ChildrenProps } from '@/types';
 
-type SocketContextType = {
+import { SocketContext } from './SocketContext';
+
+export type SocketContextType = {
   socket: any | null;
   isConnected: boolean;
 };
-
-const SocketContext = createContext<SocketContextType>({
-  socket: null,
-  isConnected: false,
-});
 
 export const useSocket = () => {
   return useContext(SocketContext);
@@ -48,14 +45,13 @@ export const SocketProvider = ({ children }: ChildrenProps) => {
   }, []);
 
   // Wrap the value in useMemo to prevent it from changing on every render
-  // const contextValue = useMemo(
-  //   () => ({ socket, isConnected }),
-  //   [socket, isConnected]
-  // );
+  const contextValue = useMemo(
+    () => ({ socket, isConnected }),
+    [socket, isConnected]
+  );
 
   return (
-    // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <SocketContext.Provider value={{ socket, isConnected }}>
+    <SocketContext.Provider value={contextValue}>
       {children}
     </SocketContext.Provider>
   );
